@@ -23,9 +23,9 @@ build:
       - cmake --build build  --target all
       - cmake --install build
       - if: win or linux
-        then: cmake --build build  --target check -- CTEST_OUTPUT_ON_FAILURE=1
+        then: cmake -E env CTEST_OUTPUT_ON_FAILURE=1  cmake --build build  --target check
       - if: osx and build_platform == target_platform
-        then: cmake --build build  --target check -- CTEST_OUTPUT_ON_FAILURE=1
+        then: cmake -E env CTEST_OUTPUT_ON_FAILURE=1  cmake --build build  --target check
 
 requirements:
   build:
