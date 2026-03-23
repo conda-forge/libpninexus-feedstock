@@ -15,7 +15,11 @@ build:
     number: 1
     script:
       - if: win
-        then:  set CL=/DH5_BUILT_AS_DYNAMIC_LIB=1 %CL%
+        then:
+          - set CL=/DH5_BUILT_AS_DYNAMIC_LIB=1 %CL%
+          - set CTEST_OUTPUT_ON_FAILURE=1
+        else:
+          - export CTEST_OUTPUT_ON_FAILURE=1
       - if: win
         then: cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
         else: cmake -B build  ${CMAKE_ARGS}  -DPNINEXUS_CONAN=DISABLE
@@ -42,7 +46,7 @@ requirements:
   host:
     - hdf5
     - h5cpp
-    - boost-cpp
+    - libboost-devel
     - zlib
   run_exports:
     - ${{ pin_subpackage("libpninexus", upper_bound="x.x") }}
