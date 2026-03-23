@@ -10,6 +10,7 @@ source:
     sha256: 54b902829ba7a01f889976d72e29c782a07675ae664896da1149c7c9a3f921b0
     patches:
       - add-template-argument-list.patch
+      - add_PNINEXUS_TEST_LOG_IN_FILE.patch
 
 build:
     number: 1
