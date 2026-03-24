@@ -42,17 +42,17 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_aarch64_hdf51.14.6</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=27759&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_aarch64_hdf51.14.6" alt="variant">
-                </a>
-              </td>
-            </tr><tr>
               <td>linux_64_hdf52</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=27759&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_64_hdf52" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>linux_aarch64_hdf51.14.6</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=27759&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_aarch64_hdf51.14.6" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -69,17 +69,18 @@ Current build status
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_hdf51.14.6" alt="variant">
                 </a>
               </td>
-              <td>osx_arm64_hdf51.14.6</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=27759&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_hdf51.14.6" alt="variant">
-                </a>
-              </td>
             </tr><tr>
               <td>osx_64_hdf52</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=27759&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_64_hdf52" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64_hdf51.14.6</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=27759&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/libpninexus-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_hdf51.14.6" alt="variant">
                 </a>
               </td>
             </tr><tr>

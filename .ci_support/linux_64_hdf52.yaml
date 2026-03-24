@@ -16,6 +16,8 @@ graphviz:
 - '14'
 hdf5:
 - '2'
+libboost_devel:
+- '1.86'
 target_platform:
 - linux-64
 zlib:
