@@ -18,6 +18,8 @@ graphviz:
 - '14'
 hdf5:
 - 1.14.6
+libboost_devel:
+- '1.86'
 macos_machine:
 - x86_64-apple-darwin13.4.0
 target_platform:
