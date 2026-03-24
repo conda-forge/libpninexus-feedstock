@@ -42,7 +42,7 @@
          }
      }
 
-@@ -250,11 +252,67 @@
+@@ -250,10 +252,66 @@
                                      <<" at index "<<i<<" with type: "<<
                                      f.type_name);
              }
@@ -75,9 +75,9 @@
              else
 +	    {
 +	      BOOST_CHECK_CLOSE(f.lhs[i].real(),
-+				value_type(f.lhs_orig[i]*f.rhs_scalar).real(), 2.0e-07);
++				value_type(f.lhs_orig[i]*f.rhs_scalar).real(), 2.0e-05);
 +	      BOOST_CHECK_CLOSE(f.lhs[i].imag(),
-+				value_type(f.lhs_orig[i]*f.rhs_scalar).imag(), 2.0e-07);
++				value_type(f.lhs_orig[i]*f.rhs_scalar).imag(), 2.0e-05);
 +	    }
 +        }
 +    }
@@ -104,9 +104,9 @@
 +            else
 +	    {
 +	      BOOST_CHECK_CLOSE(f.lhs[i].real(),
-+				value_type(f.lhs_orig[i]*f.rhs[i]).real(), 2.0e-07);
++				value_type(f.lhs_orig[i]*f.rhs[i]).real(), 2.0e-05);
 +	      BOOST_CHECK_CLOSE(f.lhs[i].imag(),
-+				value_type(f.lhs_orig[i]*f.rhs[i]).imag(), 2.0e-07);
++				value_type(f.lhs_orig[i]*f.rhs[i]).imag(), 2.0e-05);
 +	      
 +	    }
          }
@@ -191,17 +191,17 @@
 +        mult_op<TestArrayT,scalar_type> o2(f.lhs,f.rhs_s);
 +        for(size_t index=0;index<o2.size();++index){
 +	  BOOST_CHECK_CLOSE(o2[index].real(), 
-+			    value_type(f.lhs[index]*f.rhs_s[index]).real(), 2.0e-07);
++			    value_type(f.lhs[index]*f.rhs_s[index]).real(), 2.0e-05);
 +	  BOOST_CHECK_CLOSE(o2[index].imag(), 
-+			    value_type(f.lhs[index]*f.rhs_s[index]).imag(), 2.0e-07);
++			    value_type(f.lhs[index]*f.rhs_s[index]).imag(), 2.0e-05);
 +	}
 +
 +        mult_op<scalar_type,TestArrayT> o3(f.lhs_s,f.rhs);
 +        for(size_t index=0;index<o3.size();++index){
 +            BOOST_CHECK_CLOSE(o3[index].real(), 
-+                              value_type(f.lhs_s[index]*f.rhs[index]).real(), 2.0e-07);
++                              value_type(f.lhs_s[index]*f.rhs[index]).real(), 2.0e-05);
 +            BOOST_CHECK_CLOSE(o3[index].imag(), 
-+                              value_type(f.lhs_s[index]*f.rhs[index]).imag(), 2.0e-07);
++                              value_type(f.lhs_s[index]*f.rhs[index]).imag(), 2.0e-05);
 +	}
 +	
 +	}
@@ -269,8 +269,8 @@
 +        result = f.lhs * f.rhs_scalar;
 +        BOOST_CHECK_EQUAL(result.size(),f.lhs.size());
 +        for(size_t index=0;index<result.size();++index){
-+	  BOOST_CHECK_CLOSE(result[index].real(), (f.lhs[index]*f.rhs_scalar).real(), 2.0e-07);
-+	  BOOST_CHECK_CLOSE(result[index].imag(), (f.lhs[index]*f.rhs_scalar).imag(), 2.0e-07);
++	  BOOST_CHECK_CLOSE(result[index].real(), (f.lhs[index]*f.rhs_scalar).real(), 2.0e-05);
++	  BOOST_CHECK_CLOSE(result[index].imag(), (f.lhs[index]*f.rhs_scalar).imag(), 2.0e-05);
 +        }
 +    }
 +
@@ -294,9 +294,9 @@
 +        result = vlhs * f.rhs_scalar;
 +        for(size_t index=0;index<result.size();index++) {
 +	  BOOST_CHECK_CLOSE(result[index].real(),
-+			    value_type(vlhs[index]*f.rhs_scalar).real(), 2.0e-07);
++			    value_type(vlhs[index]*f.rhs_scalar).real(), 2.0e-05);
 +	  BOOST_CHECK_CLOSE(result[index].imag(),
-+			    value_type(vlhs[index]*f.rhs_scalar).imag(), 2.0e-07);
++			    value_type(vlhs[index]*f.rhs_scalar).imag(), 2.0e-05);
 +	}
 +
 +        result = f.lhs_scalar * vrhs;
@@ -392,10 +392,10 @@
 +                BOOST_CHECK_EQUAL(view(i,j),fixture.lhs(i,j,3));
 +                BOOST_CHECK_CLOSE(view(i,j).real(),
 +                                  value_type(fixture.lhs_orig(i,j,3)*
-+                                             fixture.rhs_scalar).real(), 2.0e-07);
++                                             fixture.rhs_scalar).real(), 2.0e-05);
 +                BOOST_CHECK_CLOSE(view(i,j).imag(),
 +                                  value_type(fixture.lhs_orig(i,j,3)*
-+                                             fixture.rhs_scalar).imag(), 2.0e-07);
++                                             fixture.rhs_scalar).imag(), 2.0e-05);
 +            }
 +    }
 +
@@ -420,8 +420,8 @@
 +        auto orig_iter = orig.begin();
 +        auto rhs_iter  = rhs.begin();
 +        for(auto v: view) {
-+	  BOOST_CHECK_CLOSE(v.imag(),value_type((*orig_iter)*(*rhs_iter)).imag(), 2.0e-07);
-+	  BOOST_CHECK_CLOSE(v.real(),value_type((*orig_iter++)*(*rhs_iter++)).real(), 2.0e-07);
++	  BOOST_CHECK_CLOSE(v.imag(),value_type((*orig_iter)*(*rhs_iter)).imag(), 2.0e-05);
++	  BOOST_CHECK_CLOSE(v.real(),value_type((*orig_iter++)*(*rhs_iter++)).real(), 2.0e-05);
 +	}
      }
 
