@@ -6,22 +6,22 @@ package:
   version: ${{ version }}
 
 source:
-    url: https://github.com/pni-libraries/libpninexus/archive/refs/tags/v${{ version }}.tar.gz
-    sha256: 54b902829ba7a01f889976d72e29c782a07675ae664896da1149c7c9a3f921b0
-    patches:
-      - add-template-argument-list.patch
+  url: https://github.com/pni-libraries/libpninexus/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 54b902829ba7a01f889976d72e29c782a07675ae664896da1149c7c9a3f921b0
+  patches:
+    - add-template-argument-list.patch
 
 build:
-    number: 0
-    script:
-      - if: win
-        then:  set CL=/DH5_BUILT_AS_DYNAMIC_LIB=1 %CL%
-      - if: win
-        then: cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
-        else: cmake -B build  ${CMAKE_ARGS}  -DPNINEXUS_CONAN=DISABLE
-      - cmake --build build  --target all
-      - cmake --install build
-      - cmake --build build  --target check
+  number: 1
+  script:
+    - if: win
+      then:
+        - set CL=/DH5_BUILT_AS_DYNAMIC_LIB=1 %CL%
+        - cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
+      else: cmake -B build  ${CMAKE_ARGS}  -DPNINEXUS_CONAN=DISABLE
+    - cmake --build build  --target all
+    - cmake --install build
+    - cmake --build build  --target check
 
 requirements:
   build:
@@ -36,9 +36,9 @@ requirements:
     - breathe
     - pygments
     - if: not win
-      then: make
-    - if: not win
-      then: cppunit
+      then:
+        - make
+        - cppunit
   host:
     - hdf5
     - h5cpp
@@ -48,15 +48,15 @@ requirements:
     - ${{ pin_subpackage("libpninexus", upper_bound="x.x") }}
 
 tests:
-    - package_contents:
-        include:
-          - pni/nexus/file.hpp
-          - pni/nexus/xml/create.hpp
-          - pni/nexus/path/path.hpp
-          - pni/parsers/parser.hpp
-          - pni/parsers.hpp
-        lib:
-          - pninexus
+  - package_contents:
+      include:
+        - pni/nexus/file.hpp
+        - pni/nexus/xml/create.hpp
+        - pni/nexus/path/path.hpp
+        - pni/parsers/parser.hpp
+        - pni/parsers.hpp
+      lib:
+        - pninexus
 
 about:
   homepage: https://github.com/pni-libraries/libpninexus
