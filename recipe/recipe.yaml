@@ -11,6 +11,7 @@ source:
     patches:
       - add-template-argument-list.patch
       - add_PNINEXUS_TEST_LOG_IN_FILE.patch
+      - check_close_in_complex_tests.patch
 
 build:
     number: 1
