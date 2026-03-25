@@ -15,13 +15,12 @@ source:
     - remove-boost_system.patch
 
 build:
-  number: 2
+  number: 3
   script:
     - if: win
       then:
         - set CL=/DH5_BUILT_AS_DYNAMIC_LIB=1 %CL%
-    - if: win
-      then: cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
+        - cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
       else: cmake -B build  ${CMAKE_ARGS}  -DPNINEXUS_CONAN=DISABLE
     - cmake --build build  --target all
     - cmake --install build
