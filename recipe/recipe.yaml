@@ -10,18 +10,25 @@ source:
   sha256: 54b902829ba7a01f889976d72e29c782a07675ae664896da1149c7c9a3f921b0
   patches:
     - add-template-argument-list.patch
+    - add_PNINEXUS_TEST_LOG_IN_FILE.patch
+    - check_close_in_complex_tests.patch
+    - remove-boost_system.patch
 
 build:
-  number: 1
+  number: 2
   script:
     - if: win
       then:
         - set CL=/DH5_BUILT_AS_DYNAMIC_LIB=1 %CL%
-        - cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
+    - if: win
+      then: cmake -B build -G Ninja  %CMAKE_ARGS%  -DHDF5_FIND_DEBUG=ON  -DHDF5_USE_STATIC_LIBRARIES=OFF -DPNINEXUS_CONAN=DISABLE
       else: cmake -B build  ${CMAKE_ARGS}  -DPNINEXUS_CONAN=DISABLE
     - cmake --build build  --target all
     - cmake --install build
-    - cmake --build build  --target check
+    - if: win or linux
+      then: cmake -E env CTEST_OUTPUT_ON_FAILURE=1  cmake --build build  --target check
+    - if: osx and build_platform == target_platform
+      then: cmake -E env CTEST_OUTPUT_ON_FAILURE=1  cmake --build build  --target check
 
 requirements:
   build:
@@ -42,7 +49,7 @@ requirements:
   host:
     - hdf5
     - h5cpp
-    - boost-cpp
+    - libboost-devel
     - zlib
   run_exports:
     - ${{ pin_subpackage("libpninexus", upper_bound="x.x") }}

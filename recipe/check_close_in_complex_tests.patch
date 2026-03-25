@@ -1,0 +1,468 @@
+--- a/test/math/inplace_arithmetics_test.cpp
++++ b/test/math/inplace_arithmetics_test.cpp
+@@ -33,6 +33,8 @@
+ #include <boost/current_function.hpp>
+ #include <boost/math/special_functions/math_fwd.hpp>
+ #include <pni/algorithms/math/inplace_arithmetics.hpp>
++#include <pni/types/types.hpp>
++#include <pni/types/traits.hpp>
+
+ #include "array_types.hpp"
+ #include <cmath>
+@@ -39,7 +41,6 @@
+ #include "number_ranges.hpp"
+ #include "fixture.hpp"
+
+-
+ namespace std{
+
+     //utility funtion template to check for the finiteness of a 
+@@ -49,7 +50,7 @@
+     {
+
+         return isfinite(v.real()) && isfinite(v.imag());
+-    }
++    }  
+ }
+
+
+@@ -225,11 +226,12 @@
+                                     <<" at index "<<i<<" with type: "<<
+                                     f.type_name);
+             }
+-            else
+-            {
++            else if(!is_complex_type<value_type>::value)
++	    {
++	      
+                 BOOST_CHECK_EQUAL(f.lhs[i],
+                                   value_type(f.lhs_orig[i]*f.rhs_scalar));
+-            }
++	    }
+         }
+     }
+
+@@ -250,10 +252,66 @@
+                                     <<" at index "<<i<<" with type: "<<
+                                     f.type_name);
+             }
++            else if(!is_complex_type<value_type>::value)
++	    {
++                BOOST_CHECK_EQUAL(f.lhs[i],
++                                  value_type(f.lhs_orig[i]*f.rhs[i]));
++	      
++	    }
++        }
++    }
++
++    //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(test_mult_cx_scalar,TestArrayT,all_array_cx_types)
++    {
++        typedef typename TestArrayT::value_type value_type;
++        fixture<TestArrayT> f((mult_ranges<value_type>()));
++
++        ip_type::mult(f.lhs,f.rhs_scalar);
++        
++        for(size_t i=0;i<f.lhs.size();++i)
++        {
++            if(!(std::is_integral<value_type>::value) &&  !(std::isfinite)(f.lhs[i]))
++            {
++                BOOST_TEST_MESSAGE( "Infinite result "<<f.lhs[i]<<" from "<<
++                                    f.lhs_orig[i]<<"*"<<f.rhs_scalar
++                                    <<" at index "<<i<<" with type: "<<
++                                    f.type_name);
++            }
+             else
++	    {
++	      BOOST_CHECK_CLOSE(f.lhs[i].real(),
++				value_type(f.lhs_orig[i]*f.rhs_scalar).real(), 2.0e-03);
++	      BOOST_CHECK_CLOSE(f.lhs[i].imag(),
++				value_type(f.lhs_orig[i]*f.rhs_scalar).imag(), 2.0e-03);
++	    }
++        }
++    }
++
++    //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(test_mult_cx_array,TestArrayT,all_array_cx_types)
++    {
++        typedef typename TestArrayT::value_type value_type;
++        fixture<TestArrayT> f((mult_ranges<value_type>()));
++
++        ip_type::mult(f.lhs,f.rhs);
++
++        for(size_t i=0;i<f.lhs.size();++i)
++        {
++            if(!(std::is_integral<value_type>::value) &&  !(std::isfinite)(f.lhs[i]))
+             {
+-                BOOST_CHECK_EQUAL(f.lhs[i],
+-                                  value_type(f.lhs_orig[i]*f.rhs[i]));
++                BOOST_TEST_MESSAGE( "Infinite result "<<f.lhs[i]<<" from "<<
++                                    f.lhs_orig[i]<<"*"<<f.rhs[i]
++                                    <<" at index "<<i<<" with type: "<<
++                                    f.type_name);
+             }
++            else
++	    {
++	      BOOST_CHECK_CLOSE(f.lhs[i].real(),
++				value_type(f.lhs_orig[i]*f.rhs[i]).real(), 2.0e-03);
++	      BOOST_CHECK_CLOSE(f.lhs[i].imag(),
++				value_type(f.lhs_orig[i]*f.rhs[i]).imag(), 2.0e-03);
++	      
++	    }
+         }
+     }
+
+--- a/test/math/array_types.hpp
++++ b/test/math/array_types.hpp
+@@ -85,3 +85,28 @@
+                                                       fixed_dim_array_types>,
+                                static_array_types> all_array_types;
+
++
++
++typedef boost::mpl::list<
++                         pni::dynamic_array<pni::complex32>,
++                         pni::dynamic_array<pni::complex64>,
++                         pni::dynamic_array<pni::complex128>
++                        > dyn_array_cx_types;
++
++typedef boost::mpl::list<
++                         pni::fixed_dim_array<pni::complex32,3>,
++                         pni::fixed_dim_array<pni::complex64,3>,
++                         pni::fixed_dim_array<pni::complex128,3>
++                        > fixed_dim_array_cx_types;
++
++typedef boost::mpl::list<
++                         pni::static_array<pni::complex32,2,3,4>,
++                         pni::static_array<pni::complex64,2,3,4>,
++                         pni::static_array<pni::complex128,2,3,4>
++                        > static_array_cx_types;
++
++typedef boost::mpl::joint_view<
++                               boost::mpl::joint_view<dyn_array_cx_types,
++                                                      fixed_dim_array_cx_types>,
++                               static_array_cx_types> all_array_cx_types;
++
+--- a/test/math/mult_operator_test.cpp
++++ b/test/math/mult_operator_test.cpp
+@@ -31,6 +31,8 @@
+ #endif
+
+ #include <pni/algorithms/math/div_op.hpp>
++#include <pni/types/types.hpp>
++#include <pni/types/traits.hpp>
+ #include "array_types.hpp"
+ #include "fixture.hpp"
+ #include "number_ranges.hpp"
+@@ -68,7 +70,9 @@
+
+         fixture_type f((mult_ranges<value_type>()));
+
+-        mult_op<TestArrayT,TestArrayT> o1(f.lhs,f.rhs);
++	if(!is_complex_type<value_type>::value) {
++	  
++	mult_op<TestArrayT,TestArrayT> o1(f.lhs,f.rhs);
+         for(size_t index=0;index<o1.size();++index)
+             BOOST_CHECK_EQUAL(o1[index],f.lhs[index]*f.rhs[index]);
+
+@@ -81,9 +85,45 @@
+         for(size_t index=0;index<o3.size();++index)
+             BOOST_CHECK_EQUAL(o3[index], 
+                               value_type(f.lhs_s[index]*f.rhs[index]));
++	
++	}
+     }
+
+     //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(access_cx_test,TestArrayT,all_array_cx_types)
++    {
++        typedef fixture<TestArrayT> fixture_type; 
++        typedef typename fixture_type::value_type value_type;
++        typedef typename fixture_type::scalar_type scalar_type;
++
++        fixture_type f((mult_ranges<value_type>()));
++
++	if(!is_complex_type<value_type>::value) {
++	  
++	mult_op<TestArrayT,TestArrayT> o1(f.lhs,f.rhs);
++        for(size_t index=0;index<o1.size();++index)
++            BOOST_CHECK_EQUAL(o1[index],f.lhs[index]*f.rhs[index]);
++	
++        mult_op<TestArrayT,scalar_type> o2(f.lhs,f.rhs_s);
++        for(size_t index=0;index<o2.size();++index){
++	  BOOST_CHECK_CLOSE(o2[index].real(), 
++			    value_type(f.lhs[index]*f.rhs_s[index]).real(), 2.0e-03);
++	  BOOST_CHECK_CLOSE(o2[index].imag(), 
++			    value_type(f.lhs[index]*f.rhs_s[index]).imag(), 2.0e-03);
++	}
++
++        mult_op<scalar_type,TestArrayT> o3(f.lhs_s,f.rhs);
++        for(size_t index=0;index<o3.size();++index){
++            BOOST_CHECK_CLOSE(o3[index].real(), 
++                              value_type(f.lhs_s[index]*f.rhs[index]).real(), 2.0e-03);
++            BOOST_CHECK_CLOSE(o3[index].imag(), 
++                              value_type(f.lhs_s[index]*f.rhs[index]).imag(), 2.0e-03);
++	}
++	
++	}
++    }
++
++    //========================================================================
+     BOOST_AUTO_TEST_CASE_TEMPLATE(iterator_test,TestArrayT,all_array_types)
+     {
+         typedef fixture<TestArrayT> fixture_type; 
+@@ -127,6 +167,8 @@
+         fixture_type f((mult_ranges<value_type>()));
+         auto result = TestArrayT::create(f.shape);
+
++	if(!is_complex_type<value_type>::value) {
++	  
+         result = f.lhs*f.rhs;
+         BOOST_CHECK_EQUAL(result.size(),f.lhs.size());
+         for(size_t index=0;index<result.size();++index)
+@@ -141,6 +183,8 @@
+         BOOST_CHECK_EQUAL(result.size(),f.lhs.size());
+         for(size_t index=0;index<result.size();++index)
+             BOOST_CHECK_EQUAL(result[index],f.lhs[index]*f.rhs_scalar);
++
++	}
+         
+     }
+
+@@ -156,6 +200,8 @@
+         auto vrhs = f.rhs(0,slice(0,3),slice(0,4));
+         auto vlhs = f.lhs(0,slice(0,3),slice(0,4));
+
++	if(!is_complex_type<value_type>::value) {
++	  
+         result_type result(vlhs * vrhs);
+         for(size_t index=0;index<result.size();index++)
+             BOOST_CHECK_EQUAL(result[index],
+@@ -170,6 +216,67 @@
+         for(size_t index=0;index<result.size();index++)
+             BOOST_CHECK_EQUAL(result[index],
+                               value_type(f.lhs_scalar*vrhs[index]));
++	
++	}
++
++    }
++
++    //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(operator_cx_test,TestArrayT,all_array_cx_types)
++    {
++        typedef fixture<TestArrayT> fixture_type; 
++        typedef typename fixture_type::value_type value_type;
++
++        fixture_type f((mult_ranges<value_type>()));
++        auto result = TestArrayT::create(f.shape);
++
++        result = f.lhs*f.rhs;
++        BOOST_CHECK_EQUAL(result.size(),f.lhs.size());
++        for(size_t index=0;index<result.size();++index)
++            BOOST_CHECK_EQUAL(result[index],f.lhs[index]*f.rhs[index]);
++
++        result = f.lhs_scalar*f.rhs;
++        BOOST_CHECK_EQUAL(result.size(),f.rhs.size());
++        for(size_t index=0;index<result.size();++index)
++            BOOST_CHECK_EQUAL(result[index],f.lhs_scalar*f.rhs[index]);
++
++        result = f.lhs * f.rhs_scalar;
++        BOOST_CHECK_EQUAL(result.size(),f.lhs.size());
++        for(size_t index=0;index<result.size();++index){
++	  BOOST_CHECK_CLOSE(result[index].real(), (f.lhs[index]*f.rhs_scalar).real(), 2.0e-03);
++	  BOOST_CHECK_CLOSE(result[index].imag(), (f.lhs[index]*f.rhs_scalar).imag(), 2.0e-03);
++        }
++    }
++
++    //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(operator_on_view_cx_test,TestArrayT,all_array_cx_types)
++    {
++        typedef fixture<TestArrayT> fixture_type; 
++        typedef typename fixture_type::value_type value_type;
++        typedef dynamic_array<value_type> result_type;
++
++        fixture_type f((mult_ranges<value_type>()));
++
++        auto vrhs = f.rhs(0,slice(0,3),slice(0,4));
++        auto vlhs = f.lhs(0,slice(0,3),slice(0,4));
++
++        result_type result(vlhs * vrhs);
++        for(size_t index=0;index<result.size();index++)
++            BOOST_CHECK_EQUAL(result[index],
++                              value_type(vlhs[index]*vrhs[index]));
++
++        result = vlhs * f.rhs_scalar;
++        for(size_t index=0;index<result.size();index++) {
++	  BOOST_CHECK_CLOSE(result[index].real(),
++			    value_type(vlhs[index]*f.rhs_scalar).real(), 2.0e-03);
++	  BOOST_CHECK_CLOSE(result[index].imag(),
++			    value_type(vlhs[index]*f.rhs_scalar).imag(), 2.0e-03);
++	}
++
++        result = f.lhs_scalar * vrhs;
++        for(size_t index=0;index<result.size();index++)
++            BOOST_CHECK_EQUAL(result[index],
++                              value_type(f.lhs_scalar*vrhs[index]));
+
+     }
+
+--- a/test/arrays/array_view_unary_arithmetic_test.cpp
++++ b/test/arrays/array_view_unary_arithmetic_test.cpp
+@@ -30,6 +30,8 @@
+ #pragma GCC diagnostic pop
+ #endif
+ #include <boost/mpl/joint_view.hpp>
++#include <pni/types/types.hpp>
++#include <pni/types/traits.hpp>
+ #include "array_types.hpp"
+ #include "../data_generator.hpp"
+ #include "../math/number_ranges.hpp"
+@@ -48,6 +50,18 @@
+                                 > numeric_array_types;
+
+
++typedef  boost::mpl::joint_view<numeric_dynamic_arrays_cx,
++#if GCC_VERSION > 40800
++                                boost::mpl::joint_view<
++                                numeric_fixed_dim_arrays_cx<3>,
++                                numeric_static_arrays_cx<2,3,5>
++                                >
++#else 
++                                numeric_fixed_dim_arrays_cx<3>
++#endif
++                                > numeric_array_cx_types;
++
++
+ template<typename TestArrayT> struct fixture
+ {
+     typedef TestArrayT array_type;
+@@ -228,7 +242,9 @@
+     {
+         typedef fixture<TestArrayT> fixture_type;
+         typedef typename TestArrayT::value_type value_type;
+-        
++
++	if(!is_complex_type<value_type>::value) {
++	  
+         mult_ranges<value_type> ranges;
+         fixture_type fixture(ranges.rhs_min(),ranges.rhs_max(),
+                              ranges.lhs_min(),ranges.lhs_max());
+@@ -244,6 +260,8 @@
+                                   value_type(fixture.lhs_orig(i,j,3)*
+                                              fixture.rhs_scalar));
+             }
++	
++	}
+     }
+
+     //========================================================================
+@@ -252,6 +270,8 @@
+         typedef fixture<TestArrayT> fixture_type;
+         typedef typename TestArrayT::value_type value_type;
+         
++	if(!is_complex_type<value_type>::value) {
++	  
+         mult_ranges<value_type> ranges;
+         fixture_type fixture(ranges.rhs_min(),ranges.rhs_max(),
+                              ranges.lhs_min(),ranges.lhs_max());
+@@ -268,6 +288,60 @@
+         auto rhs_iter  = rhs.begin();
+         for(auto v: view)
+             BOOST_CHECK_EQUAL(v,value_type((*orig_iter++)*(*rhs_iter++)));
++
++	}
++    }
++
++    //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(test_mult_scalar_cx,TestArrayT,numeric_array_cx_types)
++    {
++        typedef fixture<TestArrayT> fixture_type;
++        typedef typename TestArrayT::value_type value_type;
++        
++        mult_ranges<value_type> ranges;
++        fixture_type fixture(ranges.rhs_min(),ranges.rhs_max(),
++                             ranges.lhs_min(),ranges.lhs_max());
++
++        auto view = fixture.lhs(slice(0,2),slice(0,2),3);
++        view *= fixture.rhs_scalar;
++        
++        for(size_t i=0;i<2;++i)
++            for(size_t j=0;j<2;++j)
++            {
++                BOOST_CHECK_EQUAL(view(i,j),fixture.lhs(i,j,3));
++                BOOST_CHECK_CLOSE(view(i,j).real(),
++                                  value_type(fixture.lhs_orig(i,j,3)*
++                                             fixture.rhs_scalar).real(), 2.0e-03);
++                BOOST_CHECK_CLOSE(view(i,j).imag(),
++                                  value_type(fixture.lhs_orig(i,j,3)*
++                                             fixture.rhs_scalar).imag(), 2.0e-03);
++            }
++    }
++
++    //========================================================================
++    BOOST_AUTO_TEST_CASE_TEMPLATE(test_mult_array_cx,TestArrayT,numeric_array_cx_types)
++    {
++        typedef fixture<TestArrayT> fixture_type;
++        typedef typename TestArrayT::value_type value_type;
++        
++        mult_ranges<value_type> ranges;
++        fixture_type fixture(ranges.rhs_min(),ranges.rhs_max(),
++                             ranges.lhs_min(),ranges.lhs_max());
++
++        auto view = fixture.lhs(1,slice(0,3),slice(0,5));
++        dynamic_array<value_type> orig(view);
++        auto view_shape = view.template shape<shape_t>();
++        auto rhs = dynamic_array<value_type>::create(view_shape);
++        std::generate(rhs.begin(),rhs.end(),fixture.generator_rhs);
++
++        view *= rhs;
++
++        auto orig_iter = orig.begin();
++        auto rhs_iter  = rhs.begin();
++        for(auto v: view) {
++	  BOOST_CHECK_CLOSE(v.imag(),value_type((*orig_iter)*(*rhs_iter)).imag(), 2.0e-03);
++	  BOOST_CHECK_CLOSE(v.real(),value_type((*orig_iter++)*(*rhs_iter++)).real(), 2.0e-03);
++	}
+     }
+
+ BOOST_AUTO_TEST_SUITE_END()
+--- a/test/arrays/array_types.hpp
++++ b/test/arrays/array_types.hpp
+@@ -47,6 +47,11 @@
+                          pni::dynamic_array<pni::complex128>>
+                          numeric_dynamic_arrays;
+
++typedef boost::mpl::list<pni::dynamic_array<pni::complex32>,
++                         pni::dynamic_array<pni::complex64>,
++                         pni::dynamic_array<pni::complex128>>
++                         numeric_dynamic_arrays_cx;
++
+ typedef boost::mpl::list<pni::dynamic_array<pni::string>,
+                          pni::dynamic_array<pni::bool_t>,
+                          pni::dynamic_array<hdf5::datatype::EBool>>
+@@ -73,6 +78,12 @@
+                          pni::fixed_dim_array<pni::complex64,TDimN>,
+                          pni::fixed_dim_array<pni::complex128,TDimN>>;
+                          
++template<size_t TDimN>
++using numeric_fixed_dim_arrays_cx = 
++        boost::mpl::list<pni::fixed_dim_array<pni::complex32,TDimN>,
++                         pni::fixed_dim_array<pni::complex64,TDimN>,
++                         pni::fixed_dim_array<pni::complex128,TDimN>>;
++                         
+
+ template<size_t TDimN>
+ using nonnumeric_fixed_dim_arrays = 
+@@ -103,6 +114,12 @@
+                          pni::static_array<pni::complex128,TDimsN...>>;
+
+ template<size_t... TDimsN>
++using numeric_static_arrays_cx = 
++        boost::mpl::list<pni::static_array<pni::complex32,TDimsN... >,
++                         pni::static_array<pni::complex64,TDimsN... >,
++                         pni::static_array<pni::complex128,TDimsN...>>;
++
++template<size_t... TDimsN>
+ using nonnumeric_static_arrays = 
+         boost::mpl::list<pni::static_array<pni::string,TDimsN... >,
+                          pni::static_array<pni::bool_t,TDimsN... >,

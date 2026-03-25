@@ -1,0 +1,28 @@
+--- a/cmake/BoostTestConfig.cmake
++++ b/cmake/BoostTestConfig.cmake
+@@ -22,6 +22,7 @@
+
+     #we need to create separate options configurations depending on the Boost
+     #version installed
++    if(PNINEXUS_TEST_LOG_IN_FILE EQUAL ON)
+     if(Boost_VERSION EQUAL 106200)
+         message(STATUS "Setting up test for Boost Unit test version 1.62")
+         message(STATUS " .. Due to a bug in 1.62 there will be no reporting but only logs")
+@@ -43,6 +44,7 @@
+             list(APPEND LOG_OPTIONS "--report_format=XML")
+         endif()
+     endif()
++    endif()
+
+     add_test(NAME "${test_name}"
+              COMMAND ${test_target} ${LOG_OPTIONS} ${REPORT_OPTIONS}
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -36,6 +36,7 @@
+ option(PNINEXUS_BUILD_EXAMPLES "Include the examples in the project" OFF)
+ option(PNINEXUS_BUILD_DOC "build document" ON)
+ option(PNINEXUS_USE_BOOST_FILESYSTEM "use boost filesystem library" OFF)
++option(PNINEXUS_TEST_LOG_IN_FILE "store test logs in files" OFF)
+
+
+ set(PNINEXUS_CONAN "AUTO" CACHE STRING "conan options AUTO (conan must be in path), MANUAL (expects conanbuildinfo.cmake in build directory) or DISABLE")

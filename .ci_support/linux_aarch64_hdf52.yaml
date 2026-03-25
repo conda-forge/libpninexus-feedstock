@@ -19,6 +19,6 @@ hdf5:
 libboost_devel:
 - '1.86'
 target_platform:
-- linux-64
+- linux-aarch64
 zlib:
 - '1'
