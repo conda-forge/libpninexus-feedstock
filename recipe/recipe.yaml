@@ -15,7 +15,7 @@ source:
     - remove-boost_system.patch
 
 build:
-  number: 3
+  number: 4
   script:
     - if: win
       then:
