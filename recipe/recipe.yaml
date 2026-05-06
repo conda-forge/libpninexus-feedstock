@@ -1,5 +1,5 @@
 context:
-  version: 3.3.0
+  version: "3.4.0"
 
 package:
   name: libpninexus
@@ -7,15 +7,10 @@ package:
 
 source:
   url: https://github.com/pni-libraries/libpninexus/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 54b902829ba7a01f889976d72e29c782a07675ae664896da1149c7c9a3f921b0
-  patches:
-    - add-template-argument-list.patch
-    - add_PNINEXUS_TEST_LOG_IN_FILE.patch
-    - check_close_in_complex_tests.patch
-    - remove-boost_system.patch
+  sha256: a09993d8cdb5990c1709f6f0c08c7d823ddc1bf5f2802c4ff30811d5b7d02eb4
 
 build:
-  number: 4
+  number: 0
   script:
     - if: win
       then:
