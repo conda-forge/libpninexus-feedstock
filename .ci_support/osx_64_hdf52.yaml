@@ -17,7 +17,7 @@ cxx_compiler_version:
 graphviz:
 - '14'
 hdf5:
-- '2'
+- '2.1'
 libboost_devel:
 - '1.90'
 macos_machine:
