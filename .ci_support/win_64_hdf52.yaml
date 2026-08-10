@@ -9,7 +9,7 @@ cxx_compiler:
 graphviz:
 - '14'
 hdf5:
-- '2'
+- '2.1'
 libboost_devel:
 - '1.90'
 target_platform:
