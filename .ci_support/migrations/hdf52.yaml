@@ -7,6 +7,6 @@ __migrator:
 # During the initial phase of the migration lets build for both
 # HDF5 2 and the latest version of HDF5
 hdf5:
-- '2.1'
+- '2'
 - '1.14.6'
 migrator_ts: 1774274234.55363
