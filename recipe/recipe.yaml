@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/pni-libraries/libpninexus/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: e7d34eee3ac4b986a2db9238db3e70628f846932d08fa9d445f8bfec75edacec
+  sha256: 588744358fde46e96a2c93e3ef7641b1198bdccb2d771a2b7efd21dff88faa2a
 
 build:
   number: 0
