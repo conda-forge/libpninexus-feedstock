@@ -1,5 +1,5 @@
 MACOSX_DEPLOYMENT_TARGET:
-- '11.0'
+11;rgb:ffff/ffff/ffff- '11.0'
 MACOSX_SDK_VERSION:
 - '11.0'
 c_stdlib:
@@ -18,6 +18,8 @@ graphviz:
 - '14'
 hdf5:
 - 1.14.6
+h5cpp:
+- '0.8'
 libboost_devel:
 - '1.90'
 macos_machine:

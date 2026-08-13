@@ -1,5 +1,5 @@
 context:
-  version: "3.5.0"
+  version: "3.6.0"
 
 package:
   name: libpninexus
@@ -10,7 +10,7 @@ source:
   sha256: e7d34eee3ac4b986a2db9238db3e70628f846932d08fa9d445f8bfec75edacec
 
 build:
-  number: 2
+  number: 0
   script:
     - if: win
       then:

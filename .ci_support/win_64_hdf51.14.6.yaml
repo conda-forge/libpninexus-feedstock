@@ -10,6 +10,8 @@ graphviz:
 - '14'
 hdf5:
 - 1.14.6
+h5cpp:
+- '0.8'
 libboost_devel:
 - '1.90'
 target_platform:
